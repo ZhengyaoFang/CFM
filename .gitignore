@@ -9,5 +9,4 @@ log
 weights
 scripts
 *.whl
-run.sh
 ckpt*
