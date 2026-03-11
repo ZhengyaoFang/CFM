@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cfm"
+version = "1.0.0"
+description = "Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity"
+readme = "README.md"
+requires-python = ">=3.9"
+
+authors = [
+  { name = "Nineve", email = "zhengyaonineve@outlook,com" },
+]
+license = {text = "MIT"}
+
+dependencies = [
+  "torch>=2.5.1",
+  "torchvision>=0.20.1"
+  "transformers>=4.45.2",
+  "huggingface_hub>=0.24.0",
+  "safetensors>=0.4.0",
+  "datasets",
+  "einops",
+  "sentencepiece",
+  "huggingface_hub",
+  "nvitop",
+  "accelerate",
+  "diffusers",
+  "wandb",
+  "deepspeed",
+  "peft>=0.18.1",
+  "imageio",
+  "numpy",
+  "opencv-python",
+  "omegaconf",
+  "pandas",
+  "pillow",
+  "protobuf",
+  "pyarow",
+  "tensorboard",
+  "tokenizers",
+  "tqdm",
+  "trl",
+  "fire",
+  "matplotlib",
+  "rich"
+]
+
+[project.urls]
+Homepage = "https://huggingface.co/Nineve/CFM_7B"
+
+
+[tool.setuptools]
+packages = ["cfm"]

@@ -1,0 +1,63 @@
+# Model Configuration
+rm_head_type: "ranknet"
+lora_enable: False
+vision_lora: False
+freeze_vision_tower: False
+freeze_llm: False
+tune_merger: True                     
+model_name_or_path: "Qwen/Qwen2-VL-7B-Instruct"
+num_lora_modules: -1
+lora_r: 512
+lora_alpha: 1024
+lora_namespan_exclude: ['lm_head', 'rm_head', 'embed_tokens']
+
+# Data Configuration
+confidence_threshold: 0.95
+tied_threshold: null
+max_pixels: 200704 # 256 * 28 * 28
+min_pixels: 200704
+with_instruction: true
+
+train_json_list: 
+  - "dataset/json/gen/cfm_train_rank_dataset.jsonl"
+test_json_list: 
+  - "dataset/json/gen/cfm_test_rank_dataset.jsonl"
+
+
+soft_label: False
+output_dir: output_models_7B_2
+use_special_tokens: true
+reward_token: "special"
+output_dim: 1
+scale_factor: 3.0
+loss_type: "softrank"
+
+# Training Configuration
+disable_flash_attn2: False
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 2
+gradient_accumulation_steps: 4
+num_train_epochs: 50
+learning_rate: 2.0e-6
+special_token_lr: 2.0e-6
+warmup_ratio: 0.05
+lr_scheduler_type: "constant_with_warmup"
+gradient_checkpointing: True
+gradient_checkpointing_kwargs: {"use_reentrant": False}
+max_viz_samples: 1
+visualization_steps: 1000
+
+# Evaluation and Logging
+eval_strategy: "steps"
+logging_epochs: 0.005
+eval_epochs: 0.1
+save_epochs: 0.3
+report_to: wandb
+
+# System Configuration
+bf16: True
+torch_dtype: "bfloat16"
+deepspeed: config/ds_config/zero2.json
+save_only_model: True
+save_full_model: True
+dataloader_num_workers: 8
