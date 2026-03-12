@@ -1,7 +1,10 @@
 # Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity
 
+[![arXiv](https://img.shields.io/badge/arXiv-2603.10990-b31b1b.svg)](https://arxiv.org/abs/2603.10990)
 [![Model](https://img.shields.io/badge/🤗-Model-yellow)](https://huggingface.co/Nineve/CFM_7B)
 [![Dataset](https://img.shields.io/badge/🤗-Dataset-green)](https://huggingface.co/datasets/Nineve/CFD_dataset)
+
+
 
 This repository contains the official implementation of **"Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity"**, which has been **accepted to CVPR 2026**.
 
