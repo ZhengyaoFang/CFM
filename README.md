@@ -9,7 +9,7 @@
 This repository contains the official implementation of **"Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity"**, which has been **accepted to CVPR 2026**.
 
 ## 📢 News
-
+- **2026-04**: Our paper is selected as a Highlight at CVPR 2026.
 - **2026-03**: Our paper *"Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity"* is **accepted to CVPR 2026**.
 
 ## 📄 Paper
