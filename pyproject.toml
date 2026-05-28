@@ -10,13 +10,13 @@ readme = "README.md"
 requires-python = ">=3.9"
 
 authors = [
-  { name = "Nineve", email = "zhengyaonineve@outlook,com" },
+  { name = "Nineve", email = "zhengyaonineve@outlook.com" },
 ]
-license = {text = "MIT"}
+license = {text = "Apache-2.0"}
 
 dependencies = [
   "torch>=2.5.1",
-  "torchvision>=0.20.1"
+  "torchvision>=0.20.1",
   "transformers>=4.45.2",
   "huggingface_hub>=0.24.0",
   "safetensors>=0.4.0",
@@ -37,7 +37,7 @@ dependencies = [
   "pandas",
   "pillow",
   "protobuf",
-  "pyarow",
+  "pyarrow",
   "tensorboard",
   "tokenizers",
   "tqdm",

@@ -137,8 +137,6 @@ def save_configs_to_json(data_config, training_args, model_config, peft_lora_con
     save_path = os.path.join(training_args.output_dir, "model_config.json")
 
     os.makedirs(training_args.output_dir, exist_ok=True)
-    print(training_args.output_dir)
-
     with open(save_path, "w") as f:
         json.dump(config_dict, f, indent=4)
 
@@ -281,7 +279,6 @@ def train(config, local_rank=0, debug=False):
     if training_args.local_rank == -1 or training_args.local_rank == 0:
         save_configs_to_json(data_config, training_args, model_config, peft_lora_config)
 
-    print(train_dataset)
     ## ===> Step 5: Start Training!
 
     special_token_ids = model.special_token_ids

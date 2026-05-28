@@ -157,7 +157,7 @@ class CFMRewardInferencer():
         return batch
 
     @torch.inference_mode()
-    def reward(self, prompts, image_paths, output_attn=False):
+    def reward(self, prompts, image_paths, output_attn=False, extract_layer=28, temperature=10):
         batch = self.prepare_batch(image_paths, prompts)
         input_ids = batch["input_ids"]
         rewards = self.model(
@@ -168,26 +168,22 @@ class CFMRewardInferencer():
             return rewards["logits"] / self.model.scale_factor
         else:
             hidden_states = rewards["hidden_states"] # [batch, seq_len, dim]
-            i = 0
-            j = 28
-            img_token_indexs = torch.where((input_ids[i] == self.model.config.image_token_id))
-            text_token_indexs = torch.where((input_ids[i] != self.model.config.image_token_id))
-            text_hidden = hidden_states[j][i][text_token_indexs]  # [text_len, dim]
-            img_hidden = hidden_states[j][i][img_token_indexs]    # [img_len, dim]
-            # 归一化
+            img_token_indexs = torch.where((input_ids[0] == self.model.config.image_token_id))
+            text_token_indexs = torch.where((input_ids[0] != self.model.config.image_token_id))
+            text_hidden = hidden_states[extract_layer][0][text_token_indexs]  # [text_len, dim]
+            img_hidden = hidden_states[extract_layer][0][img_token_indexs]    # [img_len, dim]
+            # Normalize hidden states
             text_hidden = torch.nn.functional.normalize(text_hidden, p=2, dim=-1)
             img_hidden = torch.nn.functional.normalize(img_hidden, p=2, dim=-1)
-            # 计算text_hidden和img_hidden的注意力权重
+            # Compute attention weights between text and image hidden states
             attn_weights = torch.matmul(text_hidden, img_hidden.T)  # [text_len, img_len]
-            temperature = 10
-            attn_weights = torch.softmax(attn_weights / temperature, dim=-1)  # [text_len, img_len]   
-            # 将attn_weights的值约束在原本值的80%大小以下，超出部分按80%计算
-            
-            # 计算图像的attention map
+            attn_weights = torch.softmax(attn_weights / temperature, dim=-1)  # [text_len, img_len]
+
+            # Compute the image attention map
             img_attention_map = torch.mean(attn_weights, dim=0)  # [img_len]
-            # 可视化注意力图
-            h_grid = batch['image_grid_thw'][i][1] // 2
-            w_grid = batch['image_grid_thw'][i][2] // 2
+            # Visualize the attention map
+            h_grid = batch['image_grid_thw'][0][1] // 2
+            w_grid = batch['image_grid_thw'][0][2] // 2
             attn_map = img_attention_map.reshape(h_grid, w_grid).to(torch.float32)
             attn_map = (attn_map - attn_map.min()) / (attn_map.max() - attn_map.min() + 1e-8)
             return rewards["logits"], attn_map

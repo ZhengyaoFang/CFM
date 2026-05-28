@@ -1,6 +1,7 @@
 
-export HUGGINGFACE_HUB_TOKEN=YOUR_TOKEN
-export WANDB_API_KEY=YOUR_TOKEN
+# Set these in your shell before running this script if required:
+# export HUGGINGFACE_HUB_TOKEN=...
+# export WANDB_API_KEY=...
 
 export WANDB_PROJECT="CFM"
 export WANDB_RUN_NAME="CFM_7B"

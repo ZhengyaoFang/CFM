@@ -1,4 +1,3 @@
-import pdb
 from dataclasses import dataclass, field
 from typing import Optional, List, Union
 import numpy as np
@@ -21,10 +20,6 @@ Evaluate the authenticity and appropriateness of colors in the image relative to
 
 Textual prompt - {text_prompt}
 
-"""
-
-INSTRUCTION_debug = """
-{text_prompt}
 """
 
 prompt_with_special_token = """
@@ -119,7 +114,7 @@ class QWen2VLDataCollator:
         Preprocess inputs to token sequences and return a batch
         """
 
-        # 扩展 image_3 ~ image_7
+        # Collect image_3 through image_7 if available
         images_1, images_2, images_3, images_4, images_5, images_6, images_7 = [], [], [], [], [], [], []
         texts_1, texts_2 = [], []
 
@@ -128,7 +123,7 @@ class QWen2VLDataCollator:
             texts_2.append(batch["text_2"])
             images_1.append(batch["image_1"])
             images_2.append(batch["image_2"])
-            # 如果存在扩展图片则添加，否则填None或空
+            # Add extended images when present; otherwise use None
             for i in range(3, 8):
                 key = f"image_{i}"
                 if key in batch:
@@ -136,7 +131,7 @@ class QWen2VLDataCollator:
                 else:
                     locals()[f"images_{i}"].append(None)
 
-        # ========= 构造 messages ==========
+        # ========= Build messages ==========
         messages_batch_1 = self._clean_message(
             texts_1,
             images_1,
@@ -154,7 +149,7 @@ class QWen2VLDataCollator:
             use_special_tokens=self.use_special_tokens,
         )
 
-        # 所有 3~7 的 text 都用 text_1
+        # Use text_1 for image_3 through image_7
         messages_batch_3 = self._clean_message(
             texts_1, images_3,
             max_pixels=self.max_pixels, min_pixels=self.min_pixels,
@@ -181,7 +176,7 @@ class QWen2VLDataCollator:
             with_instruction=self.with_instruction, use_special_tokens=self.use_special_tokens,
         )
 
-        # ========= 处理视觉输入 ==========
+        # ========= Process visual inputs ==========
         def _proc(messages):
             imgs, _ = process_vision_info(messages)
             imgs = [np.array(i) / 255.0 for i in imgs]
@@ -217,7 +212,7 @@ class QWen2VLDataCollator:
         batch_6 = _make_batch(messages_batch_6, image_inputs_6)
         batch_7 = _make_batch(messages_batch_7, image_inputs_7)
 
-        # ========= Padding 同步 ==========
+        # ========= Align padding ==========
         max_len = max(
             batch_1["input_ids"].shape[1],
             batch_2["input_ids"].shape[1],
@@ -242,7 +237,7 @@ class QWen2VLDataCollator:
         batch_6 = _pad(batch_6)
         batch_7 = _pad(batch_7)
 
-        # ========= 汇总 ==========
+        # ========= Aggregate batch ==========
         batch = {
             "batch_1": batch_1,
             "batch_2": batch_2,

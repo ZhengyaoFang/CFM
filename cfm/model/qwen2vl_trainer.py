@@ -1,5 +1,4 @@
 import os
-import pdb
 import warnings
 import time
 import math
@@ -69,7 +68,6 @@ class Qwen2VLRewardModelBT(Qwen2VLForConditionalGeneration):
         rm_head_kwargs=None,
     ):
         super().__init__(config)
-        # pdb.set_trace()
         self.output_dim = output_dim
         self.scale_factor = scale_factor
         if rm_head_type == "default":
@@ -147,7 +145,6 @@ class Qwen2VLRewardModelBT(Qwen2VLForConditionalGeneration):
         return_dict = (
             return_dict if return_dict is not None else self.config.use_return_dict
         )
-        # pdb.set_trace()
         if inputs_embeds is None:
             inputs_embeds = self.model.embed_tokens(input_ids)
             if pixel_values is not None:
@@ -190,7 +187,6 @@ class Qwen2VLRewardModelBT(Qwen2VLForConditionalGeneration):
             output_hidden_states=True,
             return_dict=return_dict,
         )
-        # import pdb; pdb.set_trace()
         hidden_states = outputs[0]  # [B, L, D]
         with torch.autocast(device_type='cuda', dtype=torch.float32):
             logits = self.rm_head(hidden_states)  # [B, L, N]
@@ -243,7 +239,6 @@ class Qwen2VLRewardModelBT(Qwen2VLForConditionalGeneration):
             )  # [B, 3, N] assert 3 attributes
             pooled_logits = pooled_logits.view(batch_size, -1)
 
-            # pdb.set_trace()
         else:
             raise ValueError("Invalid reward_token")
 
@@ -285,7 +280,6 @@ def _convert_A_B_to_chosen_rejected(
             )
             > tied_threshold
         )
-        print(nontied_mask)
     return (
         rewards_chosen,
         rewards_rejected,
@@ -309,7 +303,6 @@ class PartialEmbeddingUpdateCallback(TrainerCallback):
         self.orig_embeds_params = model.get_input_embeddings().weight.clone().detach()
 
     def on_step_end(self, args, state, control, **kwargs):
-        # pdb.set_trace()
         model = kwargs.get("model")
         tokenizer = kwargs.get("tokenizer")
 
@@ -333,71 +326,6 @@ class VLMRewardTrainer(RewardTrainer):
         self.visualization_steps = visualization_steps
         self.max_viz_samples = max_viz_samples
 
-    # def get_eval_dataloader(
-    #     self, eval_dataset: Optional[Union[str, Dataset]] = None
-    # ) -> DataLoader:
-    #     """
-    #     Returns the evaluation [`~torch.utils.data.DataLoader`].
-
-    #     Subclass and override this method if you want to inject some custom behavior.
-
-    #     Args:
-    #         eval_dataset (`str` or `torch.utils.data.Dataset`, *optional*):
-    #             If a `str`, will use `self.eval_dataset[eval_dataset]` as the evaluation dataset. If a `Dataset`, will override `self.eval_dataset` and must implement `__len__`. If it is a [`~datasets.Dataset`], columns not accepted by the `model.forward()` method are automatically removed.
-    #     """
-    #     if eval_dataset is None and self.eval_dataset is None:
-    #         raise ValueError("Trainer: evaluation requires an eval_dataset.")
-
-    #     # If we have persistent workers, don't do a fork bomb especially as eval datasets
-    #     # don't change during training
-    #     dataloader_key = eval_dataset if isinstance(eval_dataset, str) else "eval"
-    #     if (
-    #         hasattr(self, "_eval_dataloaders")
-    #         and dataloader_key in self._eval_dataloaders
-    #         and self.args.dataloader_persistent_workers
-    #     ):
-    #         return self.accelerator.prepare(self._eval_dataloaders[dataloader_key])
-
-    #     eval_dataset = (
-    #         self.eval_dataset[eval_dataset]
-    #         if isinstance(eval_dataset, str)
-    #         else eval_dataset if eval_dataset is not None else self.eval_dataset
-    #     )
-
-    #     data_collator = self.data_collator
-
-    #     if is_datasets_available() and isinstance(eval_dataset, datasets.Dataset):
-    #         eval_dataset = self._remove_unused_columns(
-    #             eval_dataset, description="evaluation"
-    #         )
-    #     else:
-    #         data_collator = self._get_collator_with_removed_columns(
-    #             data_collator, description="evaluation"
-    #         )
-
-    #     dataloader_params = {
-    #         "batch_size": self.args.eval_batch_size,
-    #         "collate_fn": data_collator,
-    #         "num_workers": self.args.dataloader_num_workers,
-    #         "pin_memory": self.args.dataloader_pin_memory,
-    #         "persistent_workers": self.args.dataloader_persistent_workers,
-    #     }
-
-    #     if not isinstance(eval_dataset, torch.utils.data.IterableDataset):
-    #         dataloader_params["sampler"] = self._get_eval_sampler(eval_dataset)
-    #         dataloader_params["drop_last"] = self.args.dataloader_drop_last
-    #         dataloader_params["prefetch_factor"] = self.args.dataloader_prefetch_factor
-
-    #     # accelerator.free_memory() will destroy the references, so
-    #     # we need to store the non-prepared version
-    #     eval_dataloader = DataLoader(eval_dataset, **dataloader_params)
-    #     if self.args.dataloader_persistent_workers:
-    #         if hasattr(self, "_eval_dataloaders"):
-    #             self._eval_dataloaders[dataloader_key] = eval_dataloader
-    #         else:
-    #             self._eval_dataloaders = {dataloader_key: eval_dataloader}
-
-    #     return self.accelerator.prepare(eval_dataloader)
 
     def create_optimizer(self):
         """
@@ -623,8 +551,6 @@ class VLMRewardTrainer(RewardTrainer):
                 if self.state.global_step % 200 == 0:
                     # Pass the original inputs which should contain the text prompts
                     self._log_training_visualization(inputs, rewards_A, rewards_B)
-            # calculate loss, optionally modulate with margin
-            # get chosen and rejected rewards from the chosen label
             (
                 rewards_chosen,
                 rewards_rejected,
@@ -651,46 +577,23 @@ class VLMRewardTrainer(RewardTrainer):
             )
             loss = -torch.nn.functional.logsigmoid(z_samples).mean()
         elif self.loss_type == "softrank":
-            # -----------------------------------------------------
-            # Step 1. 前向计算所有图像的 reward (1~7)
-            # -----------------------------------------------------
             rewards_list = []
             for i in range(1, 8):
                 rewards_i = model(return_dict=True, **inputs[f"batch_{i}"])["logits"]  # [B,1]
                 rewards_list.append(rewards_i)
 
-            # 堆叠成 [B,7]
             rewards = torch.cat(rewards_list, dim=1)  # shape: [batch_size, 7]
-            # 限制 score 的最大值不超过10，使用平滑约束保持梯度可流
-            # 使用 sigmoid 缩放：将原始 logits 映射到 [0, 10] 范围，梯度友好
-            # max_score = getattr(self, "max_score", 10.0)  # 可配置的最大值
-            # rewards = max_score * torch.sigmoid(rewards / 2.0)  # 平滑映射到 [0, max_score]
 
-            # -----------------------------------------------------
-            # Step 2. 计算 soft ranks
-            # -----------------------------------------------------
-            tau = getattr(self, "softrank_tau", 0.1)  # 可调超参
+            tau = getattr(self, "softrank_tau", 0.1)  # Tunable hyperparameter
             scores_i = rewards.unsqueeze(2)  # [B,7,1]
             scores_j = rewards.unsqueeze(1)  # [B,1,7]
             P_ij = torch.sigmoid((scores_j - scores_i) / tau)  # [B,7,7]
-            soft_ranks = 1 + torch.sum(P_ij, dim=-1)           # [B,7], 1=最优
+            soft_ranks = 1 + torch.sum(P_ij, dim=-1)           # [B, 7], 1 is best
 
-            # -----------------------------------------------------
-            # Step 3. 构造 ground-truth rank （image1 最优）
-            # -----------------------------------------------------
             device = rewards.device
             gt_ranks = torch.arange(1, 8, dtype=torch.float32, device=device).unsqueeze(0)  # [1,7]
             gt_ranks = gt_ranks.expand(rewards.size(0), -1)  # [B,7]
-
-            # -----------------------------------------------------
-            # Step 4. 计算排序损失（MSE between predicted & true ranks）
-            # -----------------------------------------------------
-            # 可选方案：MSE 或 L1 都可以，这里用 MSE
             loss = torch.mean((soft_ranks - gt_ranks) ** 2)
-
-            # 也可加权强调前几名：
-            # weights = torch.linspace(1.0, 0.5, 7, device=device)
-            # loss = torch.mean(((soft_ranks - gt_ranks) ** 2) * weights)
 
         else:
             raise NotImplementedError(f"Loss type {self.loss_type} not implemented.")
@@ -698,8 +601,6 @@ class VLMRewardTrainer(RewardTrainer):
         loss_dict.update({"loss": loss.item()})
 
         if return_outputs:
-            ## return rewards_A/B instead of chosen/rejected
-            ## easier to calculate metrics for multi-attribute
             return loss, {
                 "rewards_A": rewards[:,0],
                 "rewards_B": rewards[:,1],
@@ -857,10 +758,8 @@ class VLMRewardTrainer(RewardTrainer):
             output_dir = os.path.join(run_dir, checkpoint_folder)
             os.makedirs(output_dir, exist_ok=True)
 
-            # TODO: Just Temp
             self.save_model(output_dir, _internal_call=True)
-            # pdb.set_trace()
-
+    
             if not self.args.save_full_model:
                 non_lora_weights = get_peft_state_non_lora_maybe_zero_3(
                     self.model.named_parameters(), require_grad_only=True
@@ -885,7 +784,6 @@ class VLMRewardTrainer(RewardTrainer):
         output_dir = output_dir if output_dir is not None else self.args.output_dir
         os.makedirs(output_dir, exist_ok=True)
         logger.info(f"Saving model checkpoint to {output_dir}")
-        # pdb.set_trace()
 
         supported_classes = (
             (PreTrainedModel,)
@@ -933,7 +831,6 @@ class VLMRewardTrainer(RewardTrainer):
 
         # Good practice: save your training arguments together with the trained model
         torch.save(self.args, os.path.join(output_dir, TRAINING_ARGS_NAME))
-        # pdb.set_trace()
 
 
 def compute_multi_attr_accuracy(eval_pred, metainfo_idxs=None) -> Dict[str, float]:

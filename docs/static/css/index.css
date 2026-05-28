@@ -1,0 +1,56 @@
+/* Minimal academic page styles, inspired by Nerfies template */
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.publication-title {
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 700;
+}
+
+.publication-authors {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-authors .author-block {
+  display: inline-block;
+  margin: 0 0.3em;
+}
+
+.publication-links {
+  margin-top: 1.5em;
+}
+
+.publication-links .link-block {
+  margin: 0.2em;
+  display: inline-block;
+}
+
+.hero.teaser img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Teaser section: tighter spacing around the figure */
+.hero.teaser .hero-body {
+  padding: 0.5rem 1.5rem 1rem;
+}
+
+.hero-body {
+  padding: 3rem 1.5rem;
+}
+
+pre {
+  background: #f5f5f5;
+  padding: 1em;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.footer {
+  padding: 2rem 1.5rem;
+  background: #fafafa;
+}

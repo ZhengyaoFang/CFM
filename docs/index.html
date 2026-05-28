@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+        content="Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity. CVPR 2026 Highlight.">
+  <meta name="keywords" content="Color Fidelity, Generative Models, Benchmark, CVPR 2026, Text-to-Image, Diffusion">
+  <title>Too Vivid to Be Real? — CVPR 2026</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+</head>
+<body>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            <i>Too Vivid to Be Real?</i><br>
+            Benchmarking and Calibrating Generative Color Fidelity
+          </h1>
+
+          <h3 class="title is-4" style="color:#b31b1b;">CVPR 2026 (Highlight)</h3>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Zhengyao Fang<sup>1*</sup>,</span>
+            <span class="author-block">Zexi Jia<sup>3*</sup>,</span>
+            <span class="author-block">Yijia Zhong<sup>4</sup>,</span>
+            <span class="author-block">Pengcheng Luo<sup>5</sup>,</span>
+            <span class="author-block">Jinchao Zhang<sup>3&dagger;</sup>,</span>
+            <span class="author-block">Guangming Lu<sup>1</sup>,</span>
+            <span class="author-block">Jun Yu<sup>1</sup>,</span>
+            <span class="author-block">Wenjie Pei<sup>1,2&dagger;</sup></span>
+          </div>
+
+          <div class="is-size-6 publication-authors" style="margin-top:0.6em;">
+            <span class="author-block"><sup>1</sup>Harbin Institute of Technology, Shenzhen &nbsp;</span>
+            <span class="author-block"><sup>2</sup>Peng Cheng Laboratory &nbsp;</span>
+            <span class="author-block"><sup>3</sup>Independent Researcher</span><br>
+            <span class="author-block"><sup>4</sup>Fudan University &nbsp;</span>
+            <span class="author-block"><sup>5</sup>Peking University</span>
+          </div>
+          <div class="is-size-7" style="margin-top:0.4em; color:#666;">
+            <sup>*</sup>Equal contribution &nbsp;&nbsp; <sup>&dagger;</sup>Co-corresponding authors
+          </div>
+
+          <!-- Buttons -->
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2603.10990" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/ZhengyaoFang/CFM" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://huggingface.co/Nineve/CFM_7B" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">🤗</span>
+                  <span>Model</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://huggingface.co/datasets/Nineve/CFD_dataset" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">🤗</span>
+                  <span>Dataset</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TEASER ========== -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="./static/images/teaser.png" alt="Teaser figure" onerror="this.style.display='none'">
+      <h2 class="subtitle has-text-centered" style="margin-top:1em;">
+        <span style="font-weight:600;">TL;DR.</span>
+        Modern T2I models tend to generate images that are <i>too vivid to be real</i>, while existing
+        evaluation metrics are biased toward such over-saturated outputs. We build a 1.3M-image
+        benchmark (<b>CFD</b>), train a faithfulness-aware metric (<b>CFM</b>), and propose a
+        training-free refinement pipeline (<b>CFR</b>) for more authentic colors.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ABSTRACT ========== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Recent advances in text-to-image (T2I) generation have greatly improved visual quality,
+            yet producing images that appear visually authentic to real-world photography remains
+            challenging. This is partly due to biases in existing evaluation paradigms: human ratings
+            and preference-trained metrics often favor visually vivid images with exaggerated
+            saturation and contrast, which make generations often <i>too vivid to be real</i> even when
+            prompted for realistic-style images.
+          </p>
+          <p>
+            To address this issue, we present the <b>Color Fidelity Dataset (CFD)</b> and the
+            <b>Color Fidelity Metric (CFM)</b> for objective evaluation of color fidelity in
+            realistic-style generations. CFD contains over <b>1.3M</b> real and synthetic images with
+            ordered levels of color realism, while CFM employs a multimodal encoder to learn
+            perceptual color fidelity. In addition, we propose a training-free
+            <b>Color Fidelity Refinement (CFR)</b> that adaptively modulates spatial-temporal guidance
+            scale in generation, thereby enhancing color authenticity.
+          </p>
+          <p>
+            Together, CFD supports CFM for assessment, whose learned attention further guides CFR to
+            refine T2I fidelity, forming a progressive framework for assessing and improving color
+            fidelity in realistic-style T2I generation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CFD DATASET ========== -->
+<section class="section" style="background:#fafafa;">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Color Fidelity Dataset (CFD)</h2>
+    <div class="content has-text-centered">
+      <img src="./static/images/dataset.png" alt="CFD dataset construction" onerror="this.style.display='none'">
+    </div>
+    <div class="content has-text-justified">
+      <p>
+        CFD is a large-scale dataset specifically designed to model and quantify color authenticity in
+        realistic-style T2I generation. We collect <b>189,490</b> high-quality real-world photographs
+        spanning <b>12 categories</b> (humans, natural scenes, urban environments, etc.) as the
+        perceptual upper bound of color fidelity. Each image is captioned with a vision-language model
+        and re-synthesized by <b>11 different T2I models</b> under <b>progressively increased
+        classifier-free guidance (CFG) scales</b>, yielding synthetic variants with progressively
+        distorted color fidelity while preserving semantics.
+      </p>
+      <p>
+        Each real image is paired with six synthetic variants, forming a <b>color-fidelity sequence
+        of seven images</b>. In total, ~190K groups (<b>1.33M images</b>) are constructed and split
+        into <i>CFD-Training</i> (160k groups), <i>CFD-Test</i> (30k groups), and <i>CFD-Human</i>
+        (over 20,000 ratings on 6,690 images, average inter-rater Spearman > 0.85).
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CFM METRIC ========== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Color Fidelity Metric (CFM)</h2>
+    <div class="content has-text-centered">
+      <img src="./static/images/framework.png" alt="CFM framework" onerror="this.style.display='none'">
+    </div>
+    <div class="content has-text-justified">
+      <p>
+        Since the perception of "realistic color" depends on contextual and compositional content,
+        CFM is built on a <b>Qwen2-VL</b> vision-language backbone that jointly encodes visual and
+        textual tokens. An MLP head maps the special <code>&lt;|Reward|&gt;</code> token output to a
+        scalar fidelity score <i>S</i><sub>CFM</sub>, where higher values indicate stronger alignment
+        with real-world color statistics.
+      </p>
+      <p>
+        CFM is trained with a differentiable <b>softrank loss</b> that exploits the inherent ordinal
+        structure of CFD groups (one real reference + six synthetic variants of monotonically
+        decreasing fidelity). Pairwise sigmoid probabilities yield differentiable soft ranks; an MSE
+        between predicted and ground-truth ranks provides stable supervision over the perceptual
+        ordering, encouraging higher scores for realistic images and penalizing over-saturated ones.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CFR REFINEMENT ========== -->
+<section class="section" style="background:#fafafa;">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Color Fidelity Refinement (CFR)</h2>
+    <div class="content has-text-justified">
+      <p>
+        Beyond evaluation, we extend the benchmark into a practical enhancement pipeline. <b>CFR</b>
+        is a <b>training-free, plug-and-play</b> refinement compatible with any diffusion-based T2I
+        model. It leverages <b>cross-modal attention from CFM</b> to identify regions with high
+        color&ndash;semantic discrepancy, and adaptively modulates the denoising guidance scale both
+        <b>spatially and temporally</b>:
+      </p>
+      <p style="text-align:center;">
+        <i>s<sub>t</sub>(u, v) = s<sub>0</sub> · [ 1 &minus; λ · α(t) · </i><b>a</b><i>'(u, v) ]</i>
+      </p>
+      <p>
+        where <b>a</b><i>'</i> is the upsampled per-pixel attention map, <i>α(t) = 1 &minus; t/T</i>
+        is a temporal decay factor, and <i>λ</i> controls modulation strength. The effective guidance
+        is suppressed in regions exhibiting color&ndash;semantic discrepancy (typically over-saturated
+        areas) while remaining close to the base scale elsewhere &mdash; correcting colors without
+        compromising semantic consistency or modifying any model parameters.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BENCHMARK RESULTS ========== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Benchmark Results</h2>
+    <div class="content has-text-centered">
+      <img src="./static/images/benchmark.png" alt="Benchmark across T2I models" onerror="this.style.display='none'">
+      <p class="has-text-justified">
+        Color-fidelity ranking of 11 representative T2I models. Recent <b>SRPO</b> achieves the
+        highest CFM (9.05); <b>Qwen-Image</b> and <b>Flux-dev</b> are competitive, while
+        aesthetics-driven models (e.g., Playground-v2.5) trade off color authenticity. CFM achieves
+        <b>over 80% pairwise discrimination accuracy</b> on CFD-Test and the <b>highest correlation</b>
+        with human judgments (Spearman / Pearson / Kendall) across all baselines.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== METRIC EXAMPLES ========== -->
+<section class="section" style="background:#fafafa;">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Why Existing Metrics Fail</h2>
+    <div class="content has-text-centered">
+      <img src="./static/images/score_example.png" alt="Bias of existing aesthetic metrics" style="width: 75%; height: auto;" onerror="this.style.display='none'">
+      <p class="has-text-justified">
+        Existing aesthetic and preference-trained metrics (PickScore, ImageReward, HPSv3, MPS&hellip;)
+        are systematically biased toward vivid, high-contrast images. CFM, in contrast, assigns
+        higher scores to images with naturally balanced and authentic colors.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CFR VISUALS ========== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">CFR Qualitative Results</h2>
+    <div class="content has-text-centered">
+      <img src="./static/images/cfr_visualization.png" alt="CFR qualitative comparison" onerror="this.style.display='none'">
+      <p class="has-text-justified">
+        Plug-and-play refinement on multiple diffusion backbones. CFR suppresses over-saturation
+        and contrast imbalance, producing more natural and perceptually harmonious images while
+        preserving the semantic content of the original generations.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BIBTEX ========== -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">BibTeX</h2>
+    <pre><code>@inproceedings{cfm2026toovivid,
+  title     = {Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity},
+  author    = {Zhengyao Fang and Zexi Jia and Yijia Zhong and Pengcheng Luo and
+               Jinchao Zhang and Guangming Lu and Jun Yu and Wenjie Pei},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2026}
+}</code></pre>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>
+        Page template borrowed from
+        <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+        Licensed under
+        <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

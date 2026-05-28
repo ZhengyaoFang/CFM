@@ -76,7 +76,6 @@ class CFMRewardInferencer():
             return type(data)(self._prepare_input(v) for v in data)
         elif isinstance(data, torch.Tensor):
             kwargs = {"device": self.device}
-            ## TODO: Maybe need to add dtype
             # if self.is_deepspeed_enabled and (torch.is_floating_point(data) or torch.is_complex(data)):
             #     # NLP models inputs are int/uint and those get adjusted to the right dtype of the
             #     # embedding. Other models such as wav2vec2's inputs are already float and thus

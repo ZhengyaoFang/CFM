@@ -296,7 +296,6 @@ def _read_video_decord(
     video_path = ele["video"]
     st = time.time()
     vr = decord.VideoReader(video_path)
-    # TODO: support start_pts and end_pts
     if 'video_start' in ele or 'video_end' in ele:
         raise NotImplementedError("not support start_pts and end_pts in decord for now.")
     total_frames, video_fps = len(vr), vr.get_avg_fps()
@@ -304,7 +303,6 @@ def _read_video_decord(
     if ele['sample_type'] == 'uniform':
         nframes = smart_nframes(ele, total_frames=total_frames, video_fps=video_fps)
         # nframes = max(nframes, 8)
-        # import pdb; pdb.set_trace()
         idx = torch.linspace(0, total_frames - 1, nframes).round().long().tolist()
     elif ele['sample_type'] == 'multi_pts':
         frames_each_pts = 6
@@ -348,7 +346,6 @@ def fetch_video(ele: dict, image_factor: int = IMAGE_FACTOR) -> torch.Tensor | l
     if isinstance(ele["video"], str):
         video_reader_backend = get_video_reader_backend()
         video = VIDEO_READER_BACKENDS[video_reader_backend](ele)
-        # import pdb; pdb.set_trace()
         nframes, _, height, width = video.shape
 
         min_pixels = ele.get("min_pixels", VIDEO_MIN_PIXELS)
