@@ -1,6 +1,7 @@
 # Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity
 
 [![Project Page](https://img.shields.io/badge/Project-Page-1f6feb.svg)](https://zhengyaofang.github.io/CFM/)
+[![CVPR](https://img.shields.io/badge/CVPR-2026-8c1b13.svg)](https://openaccess.thecvf.com/content/CVPR2026/papers/Fang_Too_Vivid_to_Be_Real_Benchmarking_and_Calibrating_Generative_Color_CVPR_2026_paper.pdf)
 [![arXiv](https://img.shields.io/badge/arXiv-2603.10990-b31b1b.svg)](https://arxiv.org/abs/2603.10990)
 [![Model](https://img.shields.io/badge/🤗-Model-yellow)](https://huggingface.co/Nineve/CFM_7B)
 [![Dataset](https://img.shields.io/badge/🤗-Dataset-green)](https://huggingface.co/datasets/Nineve/CFD_dataset)
@@ -18,6 +19,7 @@ This repository contains the official implementation of **"Too Vivid to Be Real?
 - **Title**: Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity  
 - **Conference**: CVPR 2026  
 - **Project page**: [https://zhengyaofang.github.io/CFM/](https://zhengyaofang.github.io/CFM/)
+- **CVPR 2026 paper**: [CVF Open Access](https://openaccess.thecvf.com/content/CVPR2026/papers/Fang_Too_Vivid_to_Be_Real_Benchmarking_and_Calibrating_Generative_Color_CVPR_2026_paper.pdf)
 - **Paper link**: [arXiv:2603.10990](https://arxiv.org/abs/2603.10990)
 
 If you find this repository or the paper helpful in your research, please consider citing our work and starring this repository.
