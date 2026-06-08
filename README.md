@@ -56,11 +56,13 @@ pip install -r requirements.txt
 If you use this project or find our paper useful in your research, please cite:
 
 ```bibtex
-@inproceedings{cfm2026toovivid,
-  title     = {Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity},
-  author    = {Zhengyao Fang, Zexi Jia, Yijia Zhong, Pengcheng Luo, Jinchao Zhang, Guangming Lu, Jun Yu, Wenjie Pei},
-  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-  year      = {2026}
+@InProceedings{Fang_2026_CVPR,
+    author    = {Fang, Zhengyao and Jia, Zexi and Zhong, Yijia and Luo, Pengcheng and Zhang, Jinchao and Lu, Guangming and Yu, Jun and Pei, Wenjie},
+    title     = {Too Vivid to Be Real? Benchmarking and Calibrating Generative Color Fidelity},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2026},
+    pages     = {37258-37267}
 }
 ```
 
